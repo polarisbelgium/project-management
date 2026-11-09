@@ -4,6 +4,8 @@ import type { ReactNode } from 'react';
 const navItems = [
   { href: '/', label: 'Dashboard' },
   { href: '/projects', label: 'Projects' },
+  { href: '/prospects', label: 'Prospects' },
+  { href: '/emails', label: 'Email workspace' },
   { href: '/branches', label: 'Branches' },
   { href: '/departments', label: 'Departments' },
   { href: '/approvals', label: 'Approvals' },
@@ -32,7 +34,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="sidebar-card">
           <span className="card-label">AI Agent</span>
           <strong>Project planner</strong>
-          <p>Drafting resource plans, risk summaries, and action recommendations.</p>
+          <p>Drafting plans and recommendations. External communications always require your approval.</p>
         </div>
       </aside>
 

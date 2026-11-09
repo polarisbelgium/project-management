@@ -1,25 +1,25 @@
 # Project Management MVP
 
-A company-wide project, branch, and department management platform with AI-assisted planning, tracking, and decision support.
+A company-wide project, branch, and department management platform with approval-gated AI assistance.
 
-## Features
-- Company and branch hierarchy
-- Department and team structure
-- Project lifecycle tracking: Analyze → Design → Develop → Implement → Monitor → Evaluate
-- AI recommendations and action suggestions
-- Approval queue for high-impact actions
-- KPI dashboard for project health across locations
+## Current MVP
+- Company dashboard and project lifecycle tracking
+- Branch and department overview pages
+- Prospect contact list for clients and investors
+- Email workspace UI for reviewing sample messages and agent-prepared reply drafts
+- Explicit approval queue for reply drafts; sending is disabled in this demo
 
-## Getting started
+## Run locally
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open http://localhost:3000
+Open http://localhost:3000.
 
-## App architecture
-- `app/` for the Next.js UI
-- `components/` for dashboard widgets
-- `lib/data.ts` for sample company and project data
+## Important demo limitations
+- Prospects and email drafts are held in browser memory/local storage, not a shared database.
+- The email workspace uses sample messages. It is not connected to an inbox and does not send email.
+- To enable real email safely, add authenticated server-side provider integration, secure credential storage, audit logging, and a server-enforced approval check. Never expose provider credentials in client-side code.
+- Review privacy, consent, and applicable email laws before contacting prospects.
