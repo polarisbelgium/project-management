@@ -10,7 +10,7 @@ export function OverviewDashboard() {
   const delayed = projects.filter((project) => project.status === 'Delayed').length;
 
   return (
-    <main className="page-shell">
+    <div className="page-shell">
       <header className="topbar">
         <div>
           <p className="eyebrow">Company operations</p>
@@ -146,6 +146,6 @@ export function OverviewDashboard() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }
