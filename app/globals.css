@@ -1,334 +1,152 @@
 
-/* Prospect CRM and email approval workflow */
-.page-intro {
-  margin: 10px 0 0;
-  max-width: 720px;
-  color: #64748b;
-  line-height: 1.55;
-}
-
-.prospects-layout,
-.email-layout {
+/* Industry discovery / research workspace */
+.research-layout {
   display: grid;
-  grid-template-columns: minmax(270px, 0.8fr) minmax(0, 1.8fr);
+  grid-template-columns: minmax(270px, 0.75fr) minmax(0, 1.8fr);
   gap: 20px;
   align-items: start;
 }
 
-.prospect-form,
-.prospect-list,
-.inbox-panel,
-.message-panel {
+.research-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
   padding: 18px;
 }
 
-.prospect-form {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.prospect-form .panel-header,
-.message-panel .panel-header,
-.inbox-panel .panel-header {
-  margin-bottom: 4px;
-}
-
-.prospect-form label {
+.research-form label {
   display: flex;
   flex-direction: column;
   gap: 7px;
+  color: #334155;
   font-size: 13px;
   font-weight: 700;
-  color: #334155;
 }
 
-.prospect-form input,
-.prospect-form select,
-.prospect-form textarea,
-.search-input,
-.prospect-controls select,
-.draft-card textarea {
+.research-form input,
+.research-form select {
   width: 100%;
+  padding: 11px 12px;
   border: 1px solid #cbd5e1;
   border-radius: 10px;
   background: white;
-  padding: 11px 12px;
   color: #0f172a;
   font: inherit;
 }
 
-.prospect-form textarea,
-.draft-card textarea {
-  resize: vertical;
-  line-height: 1.5;
+.research-results {
+  min-width: 0;
+  padding: 18px;
 }
 
-.form-hint,
-.muted {
-  color: #64748b;
-  font-size: 12px;
-  line-height: 1.5;
-}
-
-.form-hint {
-  margin: 0;
-}
-
-.prospects-header {
+.research-header {
   align-items: center;
 }
 
-.prospects-header h2 {
-  margin-bottom: 5px;
+.research-header h2 {
+  margin: 0 0 5px;
 }
 
-.search-input {
-  max-width: 230px;
+.demo-chip {
+  border-radius: 999px;
+  padding: 7px 10px;
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
 }
 
-.prospect-list {
+.research-notice {
+  margin-bottom: 18px;
+  padding: 14px 16px;
+  border: 1px solid #fcd34d;
+  border-radius: 12px;
+  background: #fffbeb;
+  color: #78350f;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.research-notice strong {
+  margin-right: 4px;
+}
+
+.research-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 0;
 }
 
-.prospect-card {
+.research-card {
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.research-card-heading {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 14px;
-  padding: 15px;
-  border: 1px solid #e2e8f0;
-  border-radius: 14px;
-}
-
-.prospect-card-main {
-  display: flex;
   gap: 12px;
-  min-width: 0;
 }
 
-.avatar-circle {
-  flex: 0 0 42px;
-  height: 42px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: #dbeafe;
-  color: #1d4ed8;
-  font-weight: 800;
+.research-card-heading h3 {
+  margin: 8px 0 0;
 }
 
-.prospect-details h3,
-.prospect-details p {
-  margin: 0;
-}
-
-.prospect-title,
-.draft-heading {
+.research-tags {
   display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 9px;
+  gap: 8px;
+  margin: 12px 0;
 }
 
-.prospect-details p,
-.prospect-details small {
-  display: block;
-  margin-top: 5px;
-  color: #64748b;
-}
-
-.prospect-details a {
-  display: inline-block;
-  margin-top: 6px;
-  color: #1d4ed8;
-  text-decoration: none;
-}
-
-.prospect-details a:hover {
-  text-decoration: underline;
-}
-
-.type-badge {
-  background: #ede9fe;
-  color: #6d28d9;
+.research-tags span {
   border-radius: 999px;
+  background: #f1f5f9;
+  color: #334155;
   padding: 5px 9px;
   font-size: 11px;
   font-weight: 700;
 }
 
-.prospect-controls {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.prospect-controls select {
-  min-width: 120px;
-  padding: 8px;
-}
-
-.text-button {
-  border: 0;
-  background: transparent;
-  color: #b91c1c;
-  cursor: pointer;
-  padding: 7px;
-}
-
-.empty-state {
+.research-card > p {
   color: #64748b;
-  border: 1px dashed #cbd5e1;
-  border-radius: 12px;
-  padding: 18px;
-}
-
-.approval-required {
-  background: #fff7ed;
-  color: #9a3412;
-  padding: 10px 13px;
-  border-radius: 10px;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.email-notice,
-.inline-notice {
-  border-radius: 12px;
-  padding: 12px 14px;
   line-height: 1.5;
+}
+
+.fit-note,
+.source-placeholder {
+  display: flex;
+  gap: 8px;
+  margin: 10px 0;
   font-size: 13px;
 }
 
-.email-notice {
-  margin-bottom: 18px;
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
-  color: #1e40af;
+.fit-note strong,
+.source-placeholder strong {
+  flex: 0 0 90px;
 }
 
-.inline-notice {
-  margin: 16px 0;
-  background: #f0fdf4;
+.fit-note {
   color: #166534;
 }
 
-.email-layout {
-  grid-template-columns: minmax(250px, 0.8fr) minmax(0, 1.8fr);
-}
-
-.inbox-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.inbox-item {
-  width: 100%;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 7px 10px;
-  padding: 13px;
-  text-align: left;
-  color: #0f172a;
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  cursor: pointer;
-}
-
-.inbox-item.selected {
-  border-color: #3b82f6;
-  background: #eff6ff;
-}
-
-.inbox-item span,
-.inbox-item small {
+.source-placeholder {
   color: #64748b;
 }
 
-.inbox-item b,
-.inbox-item small {
-  grid-column: 1 / -1;
-}
-
-.inbox-item small {
-  line-height: 1.45;
-}
-
-.message-panel {
-  min-width: 0;
-}
-
-.message-from {
-  color: #64748b;
-  font-size: 13px;
-}
-
-.message-preview {
-  margin: 20px 0;
-  padding: 18px;
-  background: #f8fafc;
-  border-radius: 12px;
-  line-height: 1.6;
-}
-
-.draft-queue {
-  border-top: 1px solid #e2e8f0;
-  margin-top: 22px;
-  padding-top: 18px;
-}
-
-.draft-card {
-  border: 1px solid #cbd5e1;
-  border-radius: 14px;
-  padding: 16px;
-  margin-top: 12px;
-}
-
-.draft-heading {
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-.draft-heading h3 {
-  margin: 0;
-}
-
-.draft-card textarea {
-  margin-bottom: 12px;
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+.research-card .ghost-btn {
+  margin-top: 8px;
 }
 
 @media (max-width: 980px) {
-  .prospects-layout,
-  .email-layout {
+  .research-layout {
     grid-template-columns: 1fr;
   }
 
-  .prospect-card,
-  .prospect-controls,
-  .prospects-header {
-    align-items: flex-start;
+  .research-card-heading {
     flex-direction: column;
-  }
-
-  .search-input {
-    max-width: none;
   }
 }

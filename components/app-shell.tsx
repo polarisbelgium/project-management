@@ -5,6 +5,7 @@ const navItems = [
   { href: '/', label: 'Dashboard' },
   { href: '/projects', label: 'Projects' },
   { href: '/prospects', label: 'Prospects' },
+  { href: '/research', label: 'Industry research' },
   { href: '/emails', label: 'Email workspace' },
   { href: '/branches', label: 'Branches' },
   { href: '/departments', label: 'Departments' },
