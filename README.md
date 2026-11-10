@@ -1,27 +1,22 @@
-# Project Management MVP
+# ProjectHub
 
-A company-wide project, branch, and department management platform with approval-gated AI assistance.
-
-## Current MVP
-- Company dashboard and project lifecycle tracking
-- Branch and department overview pages
-- Prospect contact list for clients and investors
-- Industry research workspace with client/investor, sector, region, and keyword filters (illustrative demo records only)
-- Email workspace UI for reviewing sample messages and agent-prepared reply drafts
-- Explicit approval queue for reply drafts; sending is disabled in this demo
+Company project, branch, and department management with approval-gated communications.
 
 ## Run locally
+1. Install Node.js LTS and run `npm install`.
+2. Create a Supabase project and configure Authentication (email/password; enable email confirmation).
+3. Run `supabase/migrations/0001_projecthub.sql` in the Supabase SQL editor.
+4. Copy `.env.example` to `.env.local` and set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+5. Optionally configure a Tavily key for sourced public web search and Resend credentials for outbound mail. Keep all secrets server-side; never put service-role/provider keys in `NEXT_PUBLIC_*` variables.
+6. Run `npm run dev` and open http://localhost:3000.
 
-```bash
-npm install
-npm run dev
-```
+## Security and integration notes
+- Supabase Auth sessions are checked by middleware; the dashboard requires sign-in once configured. Email draft API routes also check the authenticated user.
+- RLS is enabled in the starter schema. The organization/prospect schema is a foundation and the current sample dashboard data has not yet been migrated to database-backed CRUD.
+- Research uses a server-side Tavily integration and returns source URLs plus retrieval timestamps. No results are faked when the provider is missing. Respect source and provider terms; verify findings.
+- Sending uses the server-side Resend integration and requires explicit, authenticated approval of a pending draft. Approved text is sent and the status is persisted. Delivery credentials are never sent to the browser. Confirm recipients and content before approval.
+- Client, employee, and prospect records may be personal data: configure authorization, retention, privacy notices, consent/legal basis, and audit/backup policies before production use.
 
-Open http://localhost:3000.
-
-## Important demo limitations
-- Prospects and email drafts are held in browser memory/local storage, not a shared database.
-- Industry research currently filters illustrative records; no live web or business database is connected. A production integration must use an authorized provider, return source URLs and retrieval timestamps, and respect provider terms and privacy requirements.
-- The email workspace uses sample messages. It is not connected to an inbox and does not send email.
-- To enable real email safely, add authenticated server-side provider integration, secure credential storage, audit logging, and a server-enforced approval check. Never expose provider credentials in client-side code.
-- Review privacy, consent, and applicable email laws before contacting prospects.
+## Current limitations
+- Authentication must be configured by the operator in Supabase; email inbox reading/replies and OAuth inbox synchronization are not implemented.
+- Dashboard/project/branch/department pages still use sample data; full multi-tenant database CRUD is next.

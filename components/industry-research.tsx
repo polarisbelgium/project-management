@@ -2,115 +2,41 @@
 
 import { FormEvent, useMemo, useState } from 'react';
 
-type TargetKind = 'Client' | 'Investor' | 'All';
-type ResearchTarget = {
-  id: string;
-  name: string;
-  kind: Exclude<TargetKind, 'All'>;
-  sector: string;
-  region: string;
-  summary: string;
-  fit: string;
-};
-
-// Clearly illustrative records keep the prototype useful without implying a live web search.
-const examples: ResearchTarget[] = [
-  { id: 'r1', name: 'Example multi-location retailer', kind: 'Client', sector: 'Retail', region: 'Europe', summary: 'Illustrative company profile for testing industry and region filters.', fit: 'Potential fit: branch operations and portfolio visibility' },
-  { id: 'r2', name: 'Sample logistics operator', kind: 'Client', sector: 'Logistics', region: 'Africa', summary: 'Illustrative company profile; not a verified business or live research result.', fit: 'Potential fit: cross-location project coordination' },
-  { id: 'r3', name: 'Demo growth investment fund', kind: 'Investor', sector: 'Technology', region: 'North America', summary: 'Illustrative investor profile for testing the discovery workflow.', fit: 'Potential fit: B2B software and operational technology' },
-  { id: 'r4', name: 'Example regional venture firm', kind: 'Investor', sector: 'Retail', region: 'Europe', summary: 'Illustrative investor profile; not a verified business or live research result.', fit: 'Potential fit: retail technology and expansion' },
-  { id: 'r5', name: 'Sample healthcare network', kind: 'Client', sector: 'Healthcare', region: 'Middle East', summary: 'Illustrative company profile for testing industry-based discovery.', fit: 'Potential fit: multi-site operations planning' },
-];
-
-const sectors = ['Any sector', 'Retail', 'Logistics', 'Technology', 'Healthcare'];
-const regions = ['Any region', 'Europe', 'Africa', 'North America', 'Middle East'];
-
+type Result = { title: string; url: string; snippet: string; score: number | null };
 export function IndustryResearch() {
-  const [submitted, setSubmitted] = useState(false);
-  const [kind, setKind] = useState<TargetKind>('All');
-  const [sector, setSector] = useState('Any sector');
-  const [region, setRegion] = useState('Any region');
+  const [kind, setKind] = useState('Clients or investors');
+  const [sector, setSector] = useState('');
+  const [region, setRegion] = useState('');
   const [keywords, setKeywords] = useState('');
+  const [results, setResults] = useState<Result[]>([]);
+  const [retrievedAt, setRetrievedAt] = useState('');
   const [notice, setNotice] = useState('');
+  const [busy, setBusy] = useState(false);
 
-  const results = useMemo(() => {
-    const term = keywords.trim().toLowerCase();
-    return examples.filter((target) => {
-      const matchesKind = kind === 'All' || target.kind === kind;
-      const matchesSector = sector === 'Any sector' || target.sector === sector;
-      const matchesRegion = region === 'Any region' || target.region === region;
-      const matchesTerm = !term || `${target.name} ${target.sector} ${target.region} ${target.summary} ${target.fit}`.toLowerCase().includes(term);
-      return matchesKind && matchesSector && matchesRegion && matchesTerm;
-    });
-  }, [kind, sector, region, keywords]);
+  const query = useMemo(() => [kind !== 'Clients or investors' ? kind : '', sector, region, keywords].filter(Boolean).join(' '), [kind, sector, region, keywords]);
 
-  function search(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setSubmitted(true);
-    setNotice('Showing illustrative demo records only. Connect an approved data/search provider to retrieve and cite live results.');
+  async function search(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault(); setBusy(true); setNotice(''); setResults([]);
+    try {
+      const response = await fetch('/api/research', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query }) });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error ?? 'Search failed.');
+      setResults(data.results); setRetrievedAt(data.retrievedAt);
+      if (data.results.length === 0) setNotice('No sourced results found. Try broader terms.');
+    } catch (error) { setNotice(error instanceof Error ? error.message : 'Search failed.'); }
+    finally { setBusy(false); }
   }
 
-  function addToProspects(target: ResearchTarget) {
-    setNotice(`Demo only: ${target.name} was not saved. Live CRM integration is not configured.`);
-  }
-
-  return (
-    <div className="page-shell">
-      <header className="topbar">
-        <div>
-          <p className="eyebrow">Business development</p>
-          <h1>Industry research</h1>
-          <p className="page-intro">Find potential clients and investors by industry, region, and fit—then review evidence before adding a contact or starting outreach.</p>
-        </div>
-      </header>
-
-      <div className="research-notice" role="status"><strong>Live search is not connected.</strong> Results below are clearly labeled examples, not verified leads. A production version should use authorized search or business-data providers and show a source URL and retrieval date for every result.</div>
-
-      <section className="research-layout">
-        <form className="panel research-form" onSubmit={search}>
-          <div className="panel-header"><h2>Define your search</h2></div>
-          <label>Looking for
-            <select value={kind} onChange={(event) => setKind(event.target.value as TargetKind)}>
-              <option>All</option><option>Client</option><option>Investor</option>
-            </select>
-          </label>
-          <label>Industry
-            <select value={sector} onChange={(event) => setSector(event.target.value)}>{sectors.map((item) => <option key={item}>{item}</option>)}</select>
-          </label>
-          <label>Region
-            <select value={region} onChange={(event) => setRegion(event.target.value)}>{regions.map((item) => <option key={item}>{item}</option>)}</select>
-          </label>
-          <label>Keywords
-            <input value={keywords} onChange={(event) => setKeywords(event.target.value)} placeholder="e.g. multi-branch, growth-stage" />
-          </label>
-          <button type="submit" className="primary-btn">Search examples</button>
-          <p className="form-hint">In a live version, AI can summarize public company information and explain why each result may fit. It should not invent contact details or send outreach automatically.</p>
-        </form>
-
-        <section className="panel research-results">
-          <div className="panel-header research-header">
-            <div><h2>{submitted ? 'Search results' : 'Discovery examples'}</h2><span className="muted">{results.length} illustrative records</span></div>
-            <span className="demo-chip">DEMO DATA</span>
-          </div>
-          {notice && <p className="inline-notice" role="status">{notice}</p>}
-          <div className="research-list">
-            {results.length === 0 && <p className="empty-state">No example records match these filters. Try another industry, region, or keyword.</p>}
-            {results.map((target) => (
-              <article className="research-card" key={target.id}>
-                <div className="research-card-heading">
-                  <div><span className="type-badge">{target.kind}</span><h3>{target.name}</h3></div>
-                  <span className="muted">Illustrative only</span>
-                </div>
-                <div className="research-tags"><span>{target.sector}</span><span>{target.region}</span></div>
-                <p>{target.summary}</p>
-                <div className="fit-note"><strong>Possible fit</strong><span>{target.fit}</span></div>
-                <div className="source-placeholder"><strong>Source</strong><span>No live source attached in demo</span></div>
-                <button type="button" className="ghost-btn" onClick={() => addToProspects(target)}>Add to prospects (demo)</button>
-              </article>
-            ))}
-          </div>
-        </section>
-      </section>
-    </div>
-  );
+  return <div className="page-shell"><header className="topbar"><div><p className="eyebrow">Business development</p><h1>Industry research</h1><p className="page-intro">Search public online sources for potential clients, investors, or partners. Review source evidence before adding a lead or contacting anyone.</p></div></header>
+    <div className="research-notice"><strong>Research only.</strong> Search results are third-party public-source material, not verified leads or recommendations. Verify details and respect website/provider terms; this tool does not collect private contact information.</div>
+    <section className="research-layout"><form className="panel research-form" onSubmit={search}><div className="panel-header"><h2>Define your search</h2></div>
+      <label>Looking for<select value={kind} onChange={(event) => setKind(event.target.value)}><option>Clients or investors</option><option>Potential clients</option><option>Investors</option><option>Industry partners</option></select></label>
+      <label>Industry<input value={sector} onChange={(event) => setSector(event.target.value)} placeholder="e.g. retail technology" /></label>
+      <label>Region<input value={region} onChange={(event) => setRegion(event.target.value)} placeholder="e.g. Europe" /></label>
+      <label>Keywords<input value={keywords} onChange={(event) => setKeywords(event.target.value)} placeholder="e.g. multi-location operations" /></label>
+      <button type="submit" className="primary-btn" disabled={busy}>{busy ? 'Searching…' : 'Search public sources'}</button><p className="form-hint">Search queries and results are handled through the configured server-side provider. API keys stay on the server.</p>
+    </form><section className="panel research-results"><div className="panel-header research-header"><div><h2>Results</h2><span className="muted">{results.length} sourced results</span></div>{retrievedAt && <span className="muted">Retrieved {new Date(retrievedAt).toLocaleString()}</span>}</div>
+      {notice && <p className="inline-notice" role="status">{notice}</p>}{results.length === 0 && !notice && <p className="empty-state">Choose filters and search to retrieve current public-source results.</p>}
+      <div className="research-list">{results.map((result) => <article className="research-card" key={result.url}><div className="research-card-heading"><h3>{result.title}</h3>{result.score !== null && <span className="muted">Relevance {Math.round(result.score * 100)}%</span>}</div><p>{result.snippet}</p><a href={result.url} target="_blank" rel="noreferrer">View source ↗</a></article>)}</div>
+    </section></section></div>;
 }
