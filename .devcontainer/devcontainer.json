@@ -1,0 +1,13 @@
+{
+  "name": "ProjectHub development",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:1-20-bullseye",
+  "forwardPorts": [3000],
+  "portsAttributes": {
+    "3000": {
+      "label": "ProjectHub web app",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  "postCreateCommand": "npm install",
+  "postStartCommand": "if [ -f package.json ]; then (npm run dev -- --hostname 0.0.0.0 > /tmp/projecthub-next.log 2>&1 &); fi"
+}
