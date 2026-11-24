@@ -1,94 +1,59 @@
-import { projects, branches, departments, recommendations, approvalQueue } from '@/lib/data';
-import { LinearProgress } from '@/components/linear-progress';
-import { StatCard } from '@/components/stat-card';
-import { StatusBadge } from '@/components/status-badge';
+import { projects } from '@/lib/data';
+
+const stages = [
+  { name: 'Analyze', className: 'stage-analyze', detail: 'Requirements & insights' },
+  { name: 'Design', className: 'stage-design', detail: 'Solution planning' },
+  { name: 'Develop', className: 'stage-develop', detail: 'Build & integrate' },
+  { name: 'Implement', className: 'stage-implement', detail: 'Deploy & adopt' },
+  { name: 'Monitor', className: 'stage-monitor', detail: 'Track outcomes' },
+  { name: 'Evaluate', className: 'stage-evaluate', detail: 'Review & improve' },
+];
 
 export function OverviewDashboard() {
-  const totalProgress = Math.round(
-    projects.reduce((sum, project) => sum + project.progress, 0) / projects.length,
-  );
-
-  const onTrack = projects.filter((project) => project.status === 'On Track').length;
-  const atRisk = projects.filter((project) => project.status === 'At Risk').length;
-  const delayed = projects.filter((project) => project.status === 'Delayed').length;
-
   return (
-    <div className="page-shell">
-      <header className="topbar">
+    <div className="page-shell lifecycle-page">
+      <header className="topbar lifecycle-heading">
         <div>
-          <p className="eyebrow">Company operations</p>
-          <h1>Project Control Center</h1>
+          <p className="eyebrow">Project operations</p>
+          <h1>Project Management Lifecycle</h1>
+          <p className="page-intro">A clear path from initial analysis to continuous improvement.</p>
         </div>
-        <button className="primary-btn">Create new project</button>
       </header>
 
-      <section className="stats-grid" aria-label="Portfolio summary">
-        <StatCard title="Projects" value={projects.length} icon="▦" description="Across all branches" tone="blue" />
-        <StatCard title="Average progress" value={`${totalProgress}%`} icon="◷" description="Portfolio completion" tone="purple" />
-        <StatCard title="On track" value={onTrack} icon="✓" description="Healthy initiatives" tone="green" />
-        <StatCard title="Needs review" value={atRisk + delayed} icon="!" description={`${atRisk} at risk · ${delayed} delayed`} tone="red" />
-      </section>
-
-      <section className="content-grid">
-        <div className="panel span-2">
-          <div className="panel-header">
-            <h2>Portfolio lifecycle</h2>
-            <span className="badge">Analyze → Design → Develop → Implement → Monitor → Evaluate</span>
+      <section className="lifecycle-board" aria-label="Project management lifecycle">
+        <div className="lifecycle-wheel">
+          <div className="center-node">
+            <span>Project</span>
+            <strong>Management</strong>
           </div>
 
-          <div className="project-table">
-            <div className="table-head row">
-              <span>Project</span><span>Branch</span><span>Stage</span><span>Owner</span><span>Progress</span>
+          {stages.map((stage) => (
+            <div className={`stage-node ${stage.className}`} key={stage.name}>
+              <strong>{stage.name}</strong>
+              <span>{stage.detail}</span>
             </div>
-            {projects.map((project) => (
-              <div key={project.id} className="table-row row">
-                <div className="project-name-wrap"><strong>{project.name}</strong><small>{project.department}</small></div>
-                <span>{project.branch}</span>
-                <span className="stage-pill">{project.stage}</span>
-                <span>{project.owner}</span>
-                <LinearProgress value={project.progress} label={`${project.name} progress`} />
-              </div>
-            ))}
-          </div>
-        </div>
+          ))}
 
-        <aside className="panel">
-          <div className="panel-header"><h2>AI recommendations</h2></div>
-          <div className="stack-list">
-            {recommendations.map((item) => (
-              <div key={item.title} className="recommendation-card">
-                <div className={`priority ${item.priority.toLowerCase()}`}>{item.priority}</div>
-                <h3>{item.title}</h3><p>{item.detail}</p>
-              </div>
-            ))}
-          </div>
-        </aside>
+          <span className="wheel-arrow arrow-analyze" aria-hidden="true">▶</span>
+          <span className="wheel-arrow arrow-design" aria-hidden="true">▼</span>
+          <span className="wheel-arrow arrow-develop" aria-hidden="true">▼</span>
+          <span className="wheel-arrow arrow-implement" aria-hidden="true">◀</span>
+          <span className="wheel-arrow arrow-monitor" aria-hidden="true">▶</span>
+          <span className="wheel-arrow arrow-evaluate" aria-hidden="true">▶</span>
+        </div>
       </section>
 
-      <section className="bottom-grid" aria-label="Company operations overview">
-        <div className="panel">
-          <div className="panel-header"><h2>Branch health</h2></div>
-          <div className="branch-list">
-            {branches.map((branch) => {
-              const status = branch.health === 'Healthy' ? 'success' : branch.health === 'At Risk' ? 'warning' : 'danger';
-              return <div key={branch.name} className="branch-item"><div><strong>{branch.name}</strong><small>{branch.city}</small></div><StatusBadge status={status}>{branch.health}</StatusBadge></div>;
-            })}
-          </div>
-        </div>
-
-        <div className="panel">
-          <div className="panel-header"><h2>Departments</h2></div>
-          <div className="dept-list">
-            {departments.map((dept) => <div key={dept.name} className="dept-item"><div><strong>{dept.name}</strong><small>{dept.lead}</small></div><span>{dept.budget}</span></div>)}
-          </div>
-        </div>
-
-        <div className="panel">
-          <div className="panel-header"><h2>Approval queue</h2></div>
-          <div className="approval-list">
-            {approvalQueue.map((item) => <div key={item.id} className="approval-item"><strong>{item.item}</strong><small>{item.owner}</small><span>{item.date}</span></div>)}
-          </div>
-        </div>
+      <section className="lifecycle-summary" aria-label="Portfolio summary">
+        {projects.map((project) => (
+          <article className="lifecycle-project" key={project.id}>
+            <div>
+              <span className="mini-label">{project.department}</span>
+              <h2>{project.name}</h2>
+            </div>
+            <span className="stage-pill">{project.stage}</span>
+            <strong>{project.progress}%</strong>
+          </article>
+        ))}
       </section>
     </div>
   );
